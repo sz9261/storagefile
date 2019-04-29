@@ -155,6 +155,9 @@ class FileRequest {
             return JSON.stringify(this.err);
         return undefined;
     }
+    continuationToken() {
+        return null;
+    }
 }
 class FileStorageManager extends Storage.StorageManager {
     constructor() {

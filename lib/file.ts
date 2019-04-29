@@ -44,6 +44,11 @@ class FileRequest implements Storage.BlobRequest
         return JSON.stringify(this.err);
       return undefined;
     }
+
+  continuationToken(): string
+    {
+      return null;
+    }
 }
 
 export class FileStorageManager extends Storage.StorageManager
