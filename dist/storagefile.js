@@ -159,7 +159,7 @@ class FileRequest {
         return null;
     }
 }
-class FileStorageManager extends Storage.StorageManager {
+class StorageManager extends Storage.StorageManager {
     constructor() {
         super();
         this.totalOps = 0;
@@ -167,16 +167,16 @@ class FileStorageManager extends Storage.StorageManager {
         this.bStarting = true;
         this.bFailedStart = false;
         Log.event('Storage: operating against file system');
-        let fsm = this;
+        let sm = this;
         fs.mkdir('state', 0o777, (err) => {
             if (err == null || err.code == 'EEXIST') {
-                fsm.bStarting = false;
-                fsm.bFailedStart = false;
+                sm.bStarting = false;
+                sm.bFailedStart = false;
             }
             else {
                 Log.error(`Storage Manager startup failed: ${err}`);
-                fsm.bStarting = false;
-                fsm.bFailedStart = true;
+                sm.bStarting = false;
+                sm.bFailedStart = true;
             }
         });
     }
@@ -274,7 +274,7 @@ class FileStorageManager extends Storage.StorageManager {
         });
     }
 }
-exports.FileStorageManager = FileStorageManager;
+exports.StorageManager = StorageManager;
 
 
 /***/ }),

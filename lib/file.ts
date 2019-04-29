@@ -51,7 +51,7 @@ class FileRequest implements Storage.BlobRequest
     }
 }
 
-export class FileStorageManager extends Storage.StorageManager
+export class StorageManager extends Storage.StorageManager
 {
   bStarting: boolean;
   bFailedStart: boolean;
@@ -69,19 +69,19 @@ export class FileStorageManager extends Storage.StorageManager
 
       Log.event('Storage: operating against file system');
 
-      let fsm: FileStorageManager = this;
+      let sm = this;
 
       fs.mkdir('state', 0o777, (err: any) => {
         if (err == null || err.code == 'EEXIST')
         {
-          fsm.bStarting = false;
-          fsm.bFailedStart = false;
+          sm.bStarting = false;
+          sm.bFailedStart = false;
         }
         else
         {
           Log.error(`Storage Manager startup failed: ${err}`);
-          fsm.bStarting = false;
-          fsm.bFailedStart = true;
+          sm.bStarting = false;
+          sm.bFailedStart = true;
         }
       });
     }

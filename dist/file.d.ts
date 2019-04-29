@@ -1,5 +1,5 @@
 import * as Storage from '@terrencecrowley/storage';
-export declare class FileStorageManager extends Storage.StorageManager {
+export declare class StorageManager extends Storage.StorageManager {
     bStarting: boolean;
     bFailedStart: boolean;
     totalOps: number;
