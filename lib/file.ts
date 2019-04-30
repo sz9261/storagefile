@@ -31,6 +31,11 @@ class FileRequest implements Storage.BlobRequest
         return Storage.ESuccess;
     }
 
+  asBuffer(): Buffer
+    {
+      return undefined;
+    }
+
   asString(): string
     {
       if (this.data == null || this.err != null)
@@ -43,6 +48,11 @@ class FileRequest implements Storage.BlobRequest
       if (this.err)
         return JSON.stringify(this.err);
       return undefined;
+    }
+
+  asArray(): string[]
+    {
+      return null;
     }
 
   continuationToken(): string
@@ -146,7 +156,8 @@ export class StorageManager extends Storage.StorageManager
       let rq: FileRequest = new FileRequest(blob);
       this.saveBlobIndex[id] = rq;
       blob.setSaving();
-      fs.writeFile(fname, blob.asString(), 'utf8', (err: any) => {
+      let b = blob.asBuffer();
+      fs.writeFile(fname, b ? b : blob.asString(), (err: any) => {
           setTimeout( () => {
             if (err)
               rq.err = '';

@@ -145,6 +145,9 @@ class FileRequest {
         else
             return Storage.ESuccess;
     }
+    asBuffer() {
+        return undefined;
+    }
     asString() {
         if (this.data == null || this.err != null)
             return undefined;
@@ -154,6 +157,9 @@ class FileRequest {
         if (this.err)
             return JSON.stringify(this.err);
         return undefined;
+    }
+    asArray() {
+        return null;
     }
     continuationToken() {
         return null;
@@ -227,7 +233,8 @@ class StorageManager extends Storage.StorageManager {
         let rq = new FileRequest(blob);
         this.saveBlobIndex[id] = rq;
         blob.setSaving();
-        fs.writeFile(fname, blob.asString(), 'utf8', (err) => {
+        let b = blob.asBuffer();
+        fs.writeFile(fname, b ? b : blob.asString(), (err) => {
             setTimeout(() => {
                 if (err)
                     rq.err = '';

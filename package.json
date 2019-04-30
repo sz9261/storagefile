@@ -1,6 +1,6 @@
 {
   "name": "@terrencecrowley/storagefile",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "File-based implementation of storage abstraction for mocking during development.",
   "main": "dist/storagefile.js",
   "types": "./dist/all.d.ts",
