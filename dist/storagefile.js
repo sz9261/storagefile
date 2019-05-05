@@ -126,11 +126,9 @@ __export(__webpack_require__(/*! ./file */ "./lib/file.ts"));
 Object.defineProperty(exports, "__esModule", { value: true });
 // Node libraries
 const fs = __webpack_require__(/*! fs */ "fs");
-// Shared libraries
-const Context = __webpack_require__(/*! @terrencecrowley/context */ "@terrencecrowley/context");
 const Storage = __webpack_require__(/*! @terrencecrowley/storage */ "@terrencecrowley/storage");
-const Log = __webpack_require__(/*! @terrencecrowley/log */ "@terrencecrowley/log");
-Context.setDefaults({ DebugSaveDelay: 0, DebugLoadDelay: 0, DebugDelDelay: 0 });
+const LogAbstract = __webpack_require__(/*! @terrencecrowley/logabstract */ "@terrencecrowley/logabstract");
+const StorageFileContextDefaults = { DebugSaveDelay: 0, DebugLoadDelay: 0, DebugDelDelay: 0 };
 class FileRequest {
     constructor(blob) {
         this.blob = blob;
@@ -166,13 +164,13 @@ class FileRequest {
     }
 }
 class StorageManager extends Storage.StorageManager {
-    constructor() {
-        super();
+    constructor(env, bucketMap) {
+        super(env, bucketMap);
         this.totalOps = 0;
         this.outstandingOps = 0;
         this.bStarting = true;
         this.bFailedStart = false;
-        Log.event('Storage: operating against file system');
+        this.env.log.event('Storage: operating against file system');
         let sm = this;
         fs.mkdir('state', 0o777, (err) => {
             if (err == null || err.code == 'EEXIST') {
@@ -180,24 +178,25 @@ class StorageManager extends Storage.StorageManager {
                 sm.bFailedStart = false;
             }
             else {
-                Log.error(`Storage Manager startup failed: ${err}`);
+                this.env.log.error(`Storage Manager startup failed: ${err}`);
                 sm.bStarting = false;
                 sm.bFailedStart = true;
             }
         });
     }
+    get env() { return this._env; }
     load(blob) {
         if (blob.id == '') {
-            Log.error('storagefile: blob load called with empty key');
-            Log.error('storagefile: blob load called with empty key');
+            this.env.log.error('storagefile: blob load called with empty key');
+            this.env.log.error('storagefile: blob load called with empty key');
             return;
         }
         let fm = this;
         fm.totalOps++;
         fm.outstandingOps++;
         let id = `load+${blob.id}+${this.totalOps}`;
-        Log.event('storagefile: load start');
-        let trace = new Log.AsyncTimer('storagefile: load');
+        this.env.log.event('storagefile: load start');
+        let trace = new LogAbstract.AsyncTimer(this.env.log, 'storagefile: load');
         let fname = 'state/' + blob.id;
         let rq = new FileRequest(blob);
         this.loadBlobIndex[id] = rq;
@@ -213,27 +212,32 @@ class StorageManager extends Storage.StorageManager {
                 this.emit('load', blob);
                 fm.outstandingOps--;
                 delete fm.loadBlobIndex[id];
-                Log.event('load end');
+                this.env.log.event('load end');
                 trace.log();
-            }, Context.xnumber('DebugLoadDelay'));
+            }, this.env.context.xnumber('DebugLoadDelay'));
         });
     }
     save(blob) {
         if (blob.id == '') {
-            Log.error('storagefile: blob save called with empty key');
+            this.env.log.error('storagefile: blob save called with empty key');
             return;
         }
         let fm = this;
         fm.totalOps++;
         fm.outstandingOps++;
         let id = `save+${blob.id}+${this.totalOps}`;
-        Log.event('storagefile: save start');
-        let trace = new Log.AsyncTimer('storagefile: save');
+        this.env.log.event('storagefile: save start');
+        let trace = new LogAbstract.AsyncTimer(this.env.log, 'storagefile: save');
         let fname = 'state/' + blob.id;
         let rq = new FileRequest(blob);
         this.saveBlobIndex[id] = rq;
         blob.setSaving();
-        let b = blob.asBuffer();
+        let b;
+        let f = blob.asFile();
+        if (f)
+            b = fs.readFileSync(f);
+        else
+            b = blob.asBuffer();
         fs.writeFile(fname, b ? b : blob.asString(), (err) => {
             setTimeout(() => {
                 if (err)
@@ -245,22 +249,22 @@ class StorageManager extends Storage.StorageManager {
                 this.emit('save', blob);
                 fm.outstandingOps--;
                 delete fm.saveBlobIndex[id];
-                Log.event('storagefile: save end');
+                this.env.log.event('storagefile: save end');
                 trace.log();
-            }, Context.xnumber('DebugSaveDelay'));
+            }, this.env.context.xnumber('DebugSaveDelay'));
         });
     }
     del(blob) {
         if (blob.id == '') {
-            Log.error('storagefile: blob delete called with empty key');
+            this.env.log.error('storagefile: blob delete called with empty key');
             return;
         }
         let fm = this;
         fm.totalOps++;
         fm.outstandingOps++;
         let id = `delete+${blob.id}+${this.totalOps}`;
-        Log.event(`storagefile: del start`);
-        let trace = new Log.AsyncTimer('storagefile: del');
+        this.env.log.event(`storagefile: del start`);
+        let trace = new LogAbstract.AsyncTimer(this.env.log, 'storagefile: del');
         let fname = 'state/' + blob.id;
         let rq = new FileRequest(blob);
         this.delBlobIndex[id] = rq;
@@ -275,9 +279,9 @@ class StorageManager extends Storage.StorageManager {
                 this.emit('del', blob);
                 fm.outstandingOps--;
                 delete fm.delBlobIndex[id];
-                Log.event('storagefile: del end');
+                this.env.log.event('storagefile: del end');
                 trace.log();
-            }, Context.xnumber('DebugDelDelay'));
+            }, this.env.context.xnumber('DebugDelDelay'));
         });
     }
 }
@@ -286,25 +290,14 @@ exports.StorageManager = StorageManager;
 
 /***/ }),
 
-/***/ "@terrencecrowley/context":
-/*!*******************************************!*\
-  !*** external "@terrencecrowley/context" ***!
-  \*******************************************/
+/***/ "@terrencecrowley/logabstract":
+/*!***********************************************!*\
+  !*** external "@terrencecrowley/logabstract" ***!
+  \***********************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("@terrencecrowley/context");
-
-/***/ }),
-
-/***/ "@terrencecrowley/log":
-/*!***************************************!*\
-  !*** external "@terrencecrowley/log" ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("@terrencecrowley/log");
+module.exports = require("@terrencecrowley/logabstract");
 
 /***/ }),
 
