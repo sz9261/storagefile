@@ -34,7 +34,7 @@ class FileRequest implements Storage.BlobRequest
       if (this.data == null && this.err == null)
         return Storage.EPending;
       else if (this.err)
-        return Storage.EFail;
+        return (this.err.code && this.err.code === 'ENOENT') ? Storage.ENotFound : Storage.EFail;
       else
         return Storage.ESuccess;
     }
