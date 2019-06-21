@@ -63,6 +63,11 @@ class FileRequest implements Storage.BlobRequest
       return null;
     }
 
+  asProps(): Storage.BlobProperties[]
+    {
+      return null;
+    }
+
   continuationToken(): string
     {
       return null;

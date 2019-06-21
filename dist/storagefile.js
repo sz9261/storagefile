@@ -159,6 +159,9 @@ class FileRequest {
     asArray() {
         return null;
     }
+    asProps() {
+        return null;
+    }
     continuationToken() {
         return null;
     }
