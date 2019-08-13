@@ -144,6 +144,8 @@ class FileRequest {
             return Storage.ESuccess;
     }
     asBuffer() {
+        if (this.data && this.err == null)
+            return Buffer.from(this.data);
         return undefined;
     }
     asString() {
@@ -171,23 +173,39 @@ class StorageManager extends Storage.StorageManager {
         super(env, bucketMap);
         this.totalOps = 0;
         this.outstandingOps = 0;
-        this.bStarting = true;
-        this.bFailedStart = false;
+        this.onInitDir = this.onInitDir.bind(this);
         this.env.log.event('Storage: operating against file system');
-        let sm = this;
+        this.nStartPending = 1;
         fs.mkdir('state', 0o777, (err) => {
             if (err == null || err.code == 'EEXIST') {
-                sm.bStarting = false;
-                sm.bFailedStart = false;
+                this.nStartPending--;
+                this.initDir('state/default');
+                this.initDir('state/production');
+                this.initDir('state/development');
+                this.initDir('state/logs');
+                this.initDir('state/downloads');
+                this.initDir('state/memsqs');
             }
             else {
                 this.env.log.error(`Storage Manager startup failed: ${err}`);
-                sm.bStarting = false;
-                sm.bFailedStart = true;
+                this.nStartPending = -1;
             }
         });
     }
     get env() { return this._env; }
+    initDir(dir) {
+        this.nStartPending++;
+        fs.mkdir(dir, 0o777, this.onInitDir);
+    }
+    onInitDir(err) {
+        if (err == null || err.code == 'EEXIST') {
+            this.nStartPending--;
+        }
+        else {
+            this.env.log.error(`Storage Manager startup initialization failed: ${err}`);
+            this.nStartPending = -1;
+        }
+    }
     load(blob) {
         if (blob.id == '') {
             this.env.log.error('storagefile: blob load called with empty key');
@@ -200,7 +218,7 @@ class StorageManager extends Storage.StorageManager {
         let id = `load+${blob.id}+${this.totalOps}`;
         this.env.log.event('storagefile: load start');
         let trace = new LogAbstract.AsyncTimer(this.env.log, 'storagefile: load');
-        let fname = 'state/' + blob.id;
+        let fname = 'state/' + blob.bucketName + '/' + blob.id;
         let rq = new FileRequest(blob);
         this.loadBlobIndex[id] = rq;
         blob.setLoading();
@@ -231,7 +249,7 @@ class StorageManager extends Storage.StorageManager {
         let id = `save+${blob.id}+${this.totalOps}`;
         this.env.log.event('storagefile: save start');
         let trace = new LogAbstract.AsyncTimer(this.env.log, 'storagefile: save');
-        let fname = 'state/' + blob.id;
+        let fname = 'state/' + blob.bucketName + '/' + blob.id;
         let rq = new FileRequest(blob);
         this.saveBlobIndex[id] = rq;
         blob.setSaving();
@@ -268,7 +286,7 @@ class StorageManager extends Storage.StorageManager {
         let id = `delete+${blob.id}+${this.totalOps}`;
         this.env.log.event(`storagefile: del start`);
         let trace = new LogAbstract.AsyncTimer(this.env.log, 'storagefile: del');
-        let fname = 'state/' + blob.id;
+        let fname = 'state/' + blob.bucketName + '/' + blob.id;
         let rq = new FileRequest(blob);
         this.delBlobIndex[id] = rq;
         blob.setDeleting();

@@ -8,12 +8,13 @@ export interface StorageFileEnvironment {
     fsmManager: FSM.FsmManager;
 }
 export declare class StorageManager extends Storage.StorageManager {
-    bStarting: boolean;
-    bFailedStart: boolean;
+    nStartPending: number;
     totalOps: number;
     outstandingOps: number;
     constructor(env: StorageFileEnvironment, bucketMap?: Storage.BucketMap);
     readonly env: StorageFileEnvironment;
+    initDir(dir: string): void;
+    onInitDir(err: any): void;
     load(blob: Storage.StorageBlob): void;
     save(blob: Storage.StorageBlob): void;
     del(blob: Storage.StorageBlob): void;
