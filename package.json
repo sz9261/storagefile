@@ -1,5 +1,5 @@
 {
-  "name": "@terrencecrowley/storagefile",
+  "name": "@dra2020/storagefile",
   "version": "1.0.13",
   "description": "File-based implementation of storage abstraction for mocking during development.",
   "main": "dist/storagefile.js",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/terrencecrowley/storagefile.git"
+    "url": "git+https://github.com/dra2020/storagefile.git"
   },
   "keywords": [
     "Typescript"
@@ -19,9 +19,9 @@
   "author": "Terry Crowley",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/terrencecrowley/storagefile/issues"
+    "url": "https://github.com/dra2020/storagefile/issues"
   },
-  "homepage": "https://github.com/terrencecrowley/storagefile#readme",
+  "homepage": "https://github.com/dra2020/storagefile#readme",
   "devDependencies": {
     "@types/node": "10.12.23",
     "source-map-loader": "^0.2.4",
@@ -32,12 +32,12 @@
     "webpack-cli": "^3.2.3"
   },
   "dependencies": {
-    "@terrencecrowley/context": "^1.0.8",
-    "@terrencecrowley/fsm": "^1.0.10",
-    "@terrencecrowley/fsmfile": "^1.0.5",
-    "@terrencecrowley/jsonstream": "^1.0.8",
-    "@terrencecrowley/logabstract": "^1.0.9",
-    "@terrencecrowley/storage": "^1.0.15",
-    "@terrencecrowley/util": "^1.0.15"
+    "@dra2020/context": "^1.0.8",
+    "@dra2020/fsm": "^1.0.10",
+    "@dra2020/fsmfile": "^1.0.5",
+    "@dra2020/jsonstream": "^1.0.8",
+    "@dra2020/logabstract": "^1.0.9",
+    "@dra2020/storage": "^1.0.15",
+    "@dra2020/util": "^1.0.15"
   }
 }
