@@ -126,8 +126,8 @@ __export(__webpack_require__(/*! ./file */ "./lib/file.ts"));
 Object.defineProperty(exports, "__esModule", { value: true });
 // Node libraries
 const fs = __webpack_require__(/*! fs */ "fs");
-const Storage = __webpack_require__(/*! @terrencecrowley/storage */ "@terrencecrowley/storage");
-const LogAbstract = __webpack_require__(/*! @terrencecrowley/logabstract */ "@terrencecrowley/logabstract");
+const Storage = __webpack_require__(/*! @dra2020/storage */ "@dra2020/storage");
+const LogAbstract = __webpack_require__(/*! @dra2020/logabstract */ "@dra2020/logabstract");
 const StorageFileContextDefaults = { DebugSaveDelay: 0, DebugLoadDelay: 0, DebugDelDelay: 0 };
 class FileRequest {
     constructor(blob) {
@@ -293,25 +293,25 @@ exports.StorageManager = StorageManager;
 
 /***/ }),
 
-/***/ "@terrencecrowley/logabstract":
-/*!***********************************************!*\
-  !*** external "@terrencecrowley/logabstract" ***!
-  \***********************************************/
+/***/ "@dra2020/logabstract":
+/*!***************************************!*\
+  !*** external "@dra2020/logabstract" ***!
+  \***************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("@terrencecrowley/logabstract");
+module.exports = require("@dra2020/logabstract");
 
 /***/ }),
 
-/***/ "@terrencecrowley/storage":
-/*!*******************************************!*\
-  !*** external "@terrencecrowley/storage" ***!
-  \*******************************************/
+/***/ "@dra2020/storage":
+/*!***********************************!*\
+  !*** external "@dra2020/storage" ***!
+  \***********************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("@terrencecrowley/storage");
+module.exports = require("@dra2020/storage");
 
 /***/ }),
 

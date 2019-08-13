@@ -2,10 +2,10 @@
 import * as fs from 'fs';
 
 // Shared libraries
-import * as Context from '@terrencecrowley/context';
-import * as Storage from '@terrencecrowley/storage';
-import * as FSM from '@terrencecrowley/fsm';
-import * as LogAbstract from '@terrencecrowley/logabstract';
+import * as Context from '@dra2020/context';
+import * as Storage from '@dra2020/storage';
+import * as FSM from '@dra2020/fsm';
+import * as LogAbstract from '@dra2020/logabstract';
 
 const StorageFileContextDefaults: Context.ContextValues = { DebugSaveDelay: 0, DebugLoadDelay: 0, DebugDelDelay: 0 };
 
