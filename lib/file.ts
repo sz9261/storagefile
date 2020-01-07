@@ -256,4 +256,12 @@ export class StorageManager extends Storage.StorageManager
           }, this.env.context.xnumber('DebugDelDelay'));
         });
     }
+
+  createTransferUrl(op: Storage.TransferUrlOp): Storage.FsmTransferUrl
+  {
+    let fsm = new Storage.FsmTransferUrl(this.env, 'transfers', op);
+    fsm.url = `/api/sessions/transfers/${fsm.key}`;
+    fsm.setState(FSM.FSM_DONE);
+    return fsm;
+  }
 }

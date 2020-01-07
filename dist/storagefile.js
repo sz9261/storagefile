@@ -127,6 +127,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Node libraries
 const fs = __webpack_require__(/*! fs */ "fs");
 const Storage = __webpack_require__(/*! @dra2020/storage */ "@dra2020/storage");
+const FSM = __webpack_require__(/*! @dra2020/fsm */ "@dra2020/fsm");
 const LogAbstract = __webpack_require__(/*! @dra2020/logabstract */ "@dra2020/logabstract");
 const StorageFileContextDefaults = { DebugSaveDelay: 0, DebugLoadDelay: 0, DebugDelDelay: 0 };
 class FileRequest {
@@ -305,9 +306,26 @@ class StorageManager extends Storage.StorageManager {
             }, this.env.context.xnumber('DebugDelDelay'));
         });
     }
+    createTransferUrl(op) {
+        let fsm = new Storage.FsmTransferUrl(this.env, 'transfers', op);
+        fsm.url = `/api/sessions/transfers/${fsm.key}`;
+        fsm.setState(FSM.FSM_DONE);
+        return fsm;
+    }
 }
 exports.StorageManager = StorageManager;
 
+
+/***/ }),
+
+/***/ "@dra2020/fsm":
+/*!*******************************!*\
+  !*** external "@dra2020/fsm" ***!
+  \*******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("@dra2020/fsm");
 
 /***/ }),
 
