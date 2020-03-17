@@ -12,7 +12,7 @@ export declare class StorageManager extends Storage.StorageManager {
     totalOps: number;
     outstandingOps: number;
     constructor(env: StorageFileEnvironment, bucketMap?: Storage.BucketMap);
-    readonly env: StorageFileEnvironment;
+    get env(): StorageFileEnvironment;
     initDir(dir: string): void;
     onInitDir(err: any): void;
     load(blob: Storage.StorageBlob): void;
