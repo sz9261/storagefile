@@ -9,11 +9,12 @@ import * as LogAbstract from '@dra2020/logabstract';
 
 const StorageFileContextDefaults: Context.ContextValues = { DebugSaveDelay: 0, DebugLoadDelay: 0, DebugDelDelay: 0 };
 
-export interface StorageFileEnvironment
+export interface Environment
 {
   context: Context.IContext;
   log: LogAbstract.ILog;
   fsmManager: FSM.FsmManager;
+  storageManager: Storage.StorageManager;
 }
 
 class FileRequest implements Storage.BlobRequest
@@ -82,7 +83,7 @@ export class StorageManager extends Storage.StorageManager
   totalOps: number;
   outstandingOps: number;
 
-  constructor(env: StorageFileEnvironment, bucketMap?: Storage.BucketMap)
+  constructor(env: Environment, bucketMap?: Storage.BucketMap)
     {
       super(env, bucketMap);
 
@@ -112,7 +113,7 @@ export class StorageManager extends Storage.StorageManager
       });
     }
 
-  get env(): StorageFileEnvironment { return this._env as StorageFileEnvironment; }
+  get env(): Environment { return this._env as Environment; }
 
   initDir(dir: string): void
   {
