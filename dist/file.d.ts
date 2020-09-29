@@ -19,5 +19,5 @@ export declare class StorageManager extends Storage.StorageManager {
     load(blob: Storage.StorageBlob): void;
     save(blob: Storage.StorageBlob): void;
     del(blob: Storage.StorageBlob): void;
-    createTransferUrl(op: Storage.TransferUrlOp): Storage.FsmTransferUrl;
+    createTransferUrl(params: Storage.TransferParams): Storage.FsmTransferUrl;
 }

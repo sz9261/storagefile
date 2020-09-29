@@ -149,6 +149,9 @@ class FileRequest {
             return Buffer.from(this.data);
         return undefined;
     }
+    asUncompressedBuffer() {
+        return this.asBuffer();
+    }
     asString() {
         if (this.data == null || this.err != null)
             return undefined;
@@ -306,8 +309,8 @@ class StorageManager extends Storage.StorageManager {
             }, this.env.context.xnumber('DebugDelDelay'));
         });
     }
-    createTransferUrl(op) {
-        let fsm = new Storage.FsmTransferUrl(this.env, 'transfers', op);
+    createTransferUrl(params) {
+        let fsm = new Storage.FsmTransferUrl(this.env, 'transfers', params);
         fsm.url = `/api/sessions/transfers/${fsm.key}`;
         fsm.setState(FSM.FSM_DONE);
         return fsm;

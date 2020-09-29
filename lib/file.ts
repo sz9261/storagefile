@@ -47,6 +47,11 @@ class FileRequest implements Storage.BlobRequest
       return undefined;
     }
 
+  asUncompressedBuffer(): Buffer
+    {
+      return this.asBuffer();
+    }
+
   asString(): string
     {
       if (this.data == null || this.err != null)
@@ -258,9 +263,9 @@ export class StorageManager extends Storage.StorageManager
         });
     }
 
-  createTransferUrl(op: Storage.TransferUrlOp): Storage.FsmTransferUrl
+  createTransferUrl(params: Storage.TransferParams): Storage.FsmTransferUrl
   {
-    let fsm = new Storage.FsmTransferUrl(this.env, 'transfers', op);
+    let fsm = new Storage.FsmTransferUrl(this.env, 'transfers', params);
     fsm.url = `/api/sessions/transfers/${fsm.key}`;
     fsm.setState(FSM.FSM_DONE);
     return fsm;
